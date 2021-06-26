@@ -23,7 +23,7 @@ class WelcomePage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   Text(
-                    "Welcome To Tastee",
+                    "Welcome To FoodBazar",
                     style: TextStyle(
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
