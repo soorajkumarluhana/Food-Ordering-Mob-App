@@ -11,9 +11,6 @@ class _SignUpState extends State<SignUp> {
   moveToHome(BuildContext context) async {
     if (_formKey.currentState!.validate());
   }
-
-
-  
     @override
     Widget build(BuildContext context) {
       return Scaffold(
@@ -39,19 +36,19 @@ class _SignUpState extends State<SignUp> {
                   SizedBox(
                     height: 20,
                   ),
-                  fieldBox("Email", "Please Enter your Email"),
+                  fieldBox("First Name", "Please enter your First Name"),
                   SizedBox(
                     height: 20,
                   ),
-                  fieldBox("Username", "Please Enter your Username"),
+                  fieldBox("Last Name", "Please enter your Last Name"),
                   SizedBox(
                     height: 20,
                   ),
-                  fieldBox("Password", "Please Enter your Password"),
+                  fieldBox("Email", "Please enter your Email"),
                   SizedBox(
                     height: 20,
                   ),
-                  fieldBox("Confirm Password", "Please confirm your Password"),
+                  fieldBox("Password", "Please enter your Password"),
                   SizedBox(
                     height: 50,
                   ),
@@ -114,18 +111,4 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  // Widget button(@required String text, Color color) {
-  //   return InkWell(
-  //     onTap: (){},
-  //     child: Container(
-  //       width: 150,
-  //       height: 60,
-  //       decoration: BoxDecoration(
-  //         color: color,
-  //         borderRadius: BorderRadius.circular(50),
-  //       ),
-  //       child: Center(child: Text(text)),
-  //     ),
-  //   );
-  // }
 
