@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -14,7 +16,29 @@ class _LoginPageState extends State<LoginPage> {
     if (_formKey.currentState!.validate()) ;
   }
 
- @override
+  final TextEditingController emailcontroller = TextEditingController();
+  final TextEditingController passwordcontroller = TextEditingController();
+
+  void loginpage() async {
+    FirebaseAuth auth = FirebaseAuth.instance;
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+    final String email = emailcontroller.text;
+    final String password = passwordcontroller.text;
+
+    try {
+      final UserCredential user = await auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      final DocumentSnapshot snapshot =
+          await firestore.collection("users").doc(user.user!.uid).get();
+
+      final data = snapshot.data();
+      Navigator.of(context).pushNamed("/home");
+    } catch (e) {
+      print("Please enter correct password");
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
@@ -48,6 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                       width: 300,
                       child: TextFormField(
+                        controller: emailcontroller,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Please Enter Your Email";
@@ -58,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
                             icon: Icon(Icons.email),
                             border: OutlineInputBorder(
                               borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0), 
+                                const Radius.circular(10.0),
                               ),
                             ),
                             hintText: "Email",
@@ -69,6 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                       width: 300,
                       child: TextFormField(
+                        controller: passwordcontroller,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return "Please Enter Your Password";
@@ -91,7 +117,8 @@ class _LoginPageState extends State<LoginPage> {
                       height: 30,
                     ),
                     InkWell(
-                      onTap: () =>moveToHome(context),
+                      onTap: () => moveToHome(context),
+                      onDoubleTap: loginpage,
                       child: Container(
                         height: 50,
                         width: 200,
@@ -119,8 +146,10 @@ class _LoginPageState extends State<LoginPage> {
                           SizedBox(
                             width: 5,
                           ),
-                          InkWell(
-                            onTap: () {},
+                          GestureDetector(
+                             onTap: () {
+                      Navigator.of(context).pushNamed("/SignUp");
+                    },
                             child: Text(
                               "Register Now",
                               style: TextStyle(color: Colors.red),
