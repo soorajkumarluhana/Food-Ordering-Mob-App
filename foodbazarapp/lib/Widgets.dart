@@ -9,7 +9,7 @@ Widget homerowcontainer(String image, String name) {
         height: 80,
         width: 80,
         decoration: BoxDecoration(
-            image: DecorationImage(image: AssetImage(image)),
+            image: DecorationImage(image: NetworkImage(image)),
             color: Colors.grey,
             borderRadius: BorderRadius.circular(10)),
       ),

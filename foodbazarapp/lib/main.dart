@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:foodorderingapp/Home.dart';
+import 'package:foodorderingapp/Item.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:foodorderingapp/LoginPage.dart';
 import 'package:foodorderingapp/SignupPage.dart';
@@ -35,7 +36,7 @@ class _MyAppState extends State<MyApp> {
         if (snapshot.connectionState == ConnectionState.done) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            home: LoginPage(),
+            home: Home(),
             routes: {
               "/Login": (context) => LoginPage(),
               "/SignUp":(context) => SignUp(),

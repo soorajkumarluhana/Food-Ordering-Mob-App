@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:foodorderingapp/LoginPage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:foodorderingapp/Widgets.dart';
 
 class Home extends StatefulWidget {
@@ -10,64 +10,81 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  final Stream<QuerySnapshot> _usersStream =
+      FirebaseFirestore.instance.collection('posts').snapshots();
+ 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.black12,
-        drawer: Drawer(
-          child: Container(
-            color: Colors.black45,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                UserAccountsDrawerHeader(
-                  accountName: Text("Sooraj Kumar Luhana"),
-                  accountEmail: Text("soorajkumarluhana@gmail.com"),
-                  currentAccountPicture: CircleAvatar(
-                    backgroundImage: AssetImage("Images/picture.jpg"),
-                  ),
-                  decoration: BoxDecoration(color: Colors.grey),
+    return Scaffold(
+    backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.brown,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child:
+                CircleAvatar(backgroundImage: AssetImage("Images/Picture.jpg")),
+          ),
+        ],
+      ),
+      drawer: Drawer(
+        child: Container(
+          color: Colors.black45,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              UserAccountsDrawerHeader(
+                accountName: Text("Sooraj Kumar Luhana"),
+                accountEmail: Text("soorajkumarluhana@gmail.com"),
+                currentAccountPicture: CircleAvatar(
+                  backgroundImage: AssetImage("Images/picture.jpg"),
                 ),
-                drawerListitle("Profile", Icons.person),
-                drawerListitle("Cart", Icons.shop),
-                drawerListitle("Order", Icons.money),
-                drawerListitle("About", Icons.sort),
-                Divider(
-                  thickness: 2,
-                  color: Colors.white,
-                ),
-                Text(
-                  "Commuicate",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
-                ),
-                drawerListitle("Change", Icons.lock),
-                GestureDetector(
-                    onTap: () {
-                       Navigator.of(context).pushNamed("/Login");
-                    },
-                    child: Container(
-                        child: drawerListitle("Log Out", Icons.logout))),
-              ],
-            ),
+                decoration: BoxDecoration(color: Colors.grey),
+              ),
+              drawerListitle("Profile", Icons.person),
+              drawerListitle("Cart", Icons.shop),
+              drawerListitle("Order", Icons.money),
+              drawerListitle("About", Icons.sort),
+              Divider(
+                thickness: 2,
+                color: Colors.white,
+              ),
+              Text(
+                "Commuicate",
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold),
+              ),
+              drawerListitle("Change", Icons.lock),
+              GestureDetector(
+                  onTap: () {
+                  Navigator.of(context).pushNamed("/Login");
+                  },
+                  child: Container(
+                      child: drawerListitle("Log Out", Icons.logout))),
+            ],
           ),
         ),
-        appBar: AppBar(
-          backgroundColor: Colors.brown,
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: CircleAvatar(
-                  backgroundImage: AssetImage("Images/picture.jpg")),
-            ),
-          ],
-        ),
-        body: SingleChildScrollView(
-          child: Column(
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _usersStream,
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text('Something went wrong');
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Text("Loading");
+          }
+
+          return ListView(
+            children: snapshot.data!.docs.map((DocumentSnapshot document) {
+              Map<String, dynamic> data =
+                  document.data()! as Map<String, dynamic>;
+              return Container(
+                child: Column(
             children: [
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -93,12 +110,7 @@ class _HomeState extends State<Home> {
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    homerowcontainer("Images/pizza.jpg", "All"),
-                    homerowcontainer("Images/burger.jpg", "Burger"),
-                    homerowcontainer("Images/pizza.jpg", "Recipe"),
-                    homerowcontainer("Images/pizza2.jpg", "Pizza"),
-                    homerowcontainer("Images/pizza.jpg", "Drink"),
-                    homerowcontainer("Images/pizza2.jpg", "Fries"),
+                    homerowcontainer(data["image"], data["name"]),
                   ],
                 ),
               ),
@@ -131,7 +143,10 @@ class _HomeState extends State<Home> {
               )
             ],
           ),
-        ),
+              );
+            }).toList(),
+          );
+        },
       ),
     );
   }
